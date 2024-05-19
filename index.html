@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOCARTIFY</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Custom CSS styles */
+    body {
+      background-color: #9abfff; 
+      color: #241700; 
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
+    /* Card styles */
+    .card {
+      background-color: #fff; 
+      color: #000; 
+      transition: transform 0.3s; 
+      height:100%;
+    }
+
+    .card:hover {
+      transform: translateY(-5px); 
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
+    }
+
+    .card img {
+      transition: transform 0.3s; 
+    }
+
+    .card:hover img {
+      transform: scale(1.05); 
+    }
+
+    /* Modal styles */
+    .modal-content {
+      background-color: #6a0dad; 
+      color: #fff; 
+    }
+
+    .modal-body img {
+      max-width: 100%; 
+      height: auto;
+    }
+
+    /* Shopping Cart styles */
+    .list-group-item {
+      background-color: #fff; 
+      color: #000; 
+    }
+
+    .list-group {
+      background-color: #fff; 
+      color: #000; 
+    }
+
+    .btn-primary {
+      background-color: #8a4fff; 
+      border-color: #8a4fff; 
+    }
+
+    .btn-primary:hover {
+      background-color: #6a0dad; 
+      border-color: #6a0dad; 
+    }
+
+    .btn-success {
+      background-color: #00cc66; 
+      border-color: #00cc66; 
+    }
+
+    .btn-success:hover {
+      background-color: #00b359; 
+      border-color: #00b359; 
+    }
+
+  </style>
+</head>
+
+<body ng-app="shoppingApp">
+
+  <div class="container" ng-controller="shoppingCtrl">
+    <center><h1>GOCARTIFY</h1></center>
+
+    <!-- Product Listing -->
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Mens Collection</h2>
+      </div>
+      <div class="col-md-4" ng-repeat="product in mensCollection">
+        <div class="card mb-4 shadow-sm">
+          <img class="card-img-top" ng-src="{{ product.image }}" alt="{{ product.name }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" ng-click="viewProduct(product)">View Details</button>
+                <button class="btn btn-sm btn-outline-primary" ng-click="addToCart(product)">Add to Cart</button>
+              </div>
+              <small class="text-muted">{{ product.price | currency:'₹' }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Women Collection -->
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Womens Collection</h2>
+      </div>
+      <div class="col-md-4" ng-repeat="product in womensCollection">
+        <div class="card mb-4 shadow-sm">
+          <img class="card-img-top" ng-src="{{ product.image }}" alt="{{ product.name }}">
+          <div class="card-body mb-4">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" ng-click="viewProduct(product)">View Details</button>
+                <button class="btn btn-sm btn-outline-primary" ng-click="addToCart(product)">Add to Cart</button>
+              </div>
+              <small class="text-muted">{{ product.price | currency:'₹' }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kids Collection -->
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Kids Collection</h2>
+      </div>
+      <div class="col-md-4" ng-repeat="product in kidsCollection">
+        <div class="card mb-4 shadow-sm">
+          <img class="card-img-top" ng-src="{{ product.image }}" alt="{{ product.name }}">
+          <div class="card-body align-items-center">
+            <h5 class="card-title align-items-center">{{ product.name }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" ng-click="viewProduct(product)">View Details</button>
+                <button class="btn btn-sm btn-outline-primary" ng-click="addToCart(product)">Add to Cart</button>
+              </div>
+              <small class="text-muted">{{ product.price | currency:'₹' }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div class="modal fade" id="productDetailsModal" tabindex="-1" role="dialog"
+      aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="productDetailsModalLabel">{{ selectedProduct.name }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <img ng-src="{{ selectedProduct.image }}" alt="{{ selectedProduct.name }}" class="img-fluid mb-3">
+            <p>{{ selectedProduct.description }}</p>
+            <p>Price: {{ selectedProduct.price | currency:'₹' }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shopping Cart -->
+    <div class="mt-5">
+      <h2>Shopping Cart</h2>
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="item in cartItems">
+          {{ item.name }} - {{ item.price | currency:'₹' }} x {{ item.quantity }}
+          <div class="input-group input-group-sm">
+            <input type="number" class="form-control" ng-model="item.quantity" ng-change="updateCart(item)">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" ng-click="removeFromCart(item)">Remove</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <p>Total: {{ calculateTotalPrice() }}</p> <!-- Ensure this line is correct -->
+      <button class="btn btn-primary" ng-click="clearCart()">Clear Cart</button>
+      <button class="btn btn-success" ng-click="checkout()">Checkout</button>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      // Define AngularJS module
+      var app = angular.module('shoppingApp', []);
+
+      // Define AngularJS controller
+      app.controller('shoppingCtrl', function ($scope, $filter) {
+
+        // Sample product data
+        $scope.mensCollection = [
+          {id: 1, name: 'MENS KURTA', price: 1000, image: 'https://valintaformens.com/cdn/shop/files/photo_2023-05-16_22-58-59.jpg?v=1684384660'},
+          {id: 2, name: 'MENS SHIRT AND PANT', price: 1500, image: 'https://rukminim2.flixcart.com/image/850/1000/xif0q/shirt/b/v/p/m-men-regular-fit-solid-casual-shirt-uv-fashion-original-imagqz2yyhzzekvf.jpeg?q=90&crop=false'},
+          {id: 3, name: 'MENS SHORT AND T-SHIRT', price: 900, image: 'https://assets.ajio.com/medias/sys_master/root/20230802/XUUi/64c9afadeebac147fc9f7288/-473Wx593H-466405770-peach-MODEL.jpg'}
+        ];
+
+        $scope.womensCollection = [
+          {id: 4, name: 'WOMEN CHUDIDAR', price: 800, image: 'https://assets2.andaazfashion.com/media/catalog/product/cache/1/image/800x1200/a12781a7f2ccb3d663f7fd01e1bd2e4e/j/a/jacquard-dark-beige-chudidar-suit-lstv08984-1.jpg'},
+          {id: 5, name: 'WOMEN SAREE', price: 2000, image: 'https://assets.ajio.com/medias/sys_master/root/20240102/wlWQ/6593d6baddf7791519fa6ab8/-473Wx593H-466935129-multi-MODEL.jpg'},
+          {id: 6, name: 'WOMEN FROCK', price: 1100, image: 'https://rukminim2.flixcart.com/image/850/1000/xif0q/dress/l/4/z/xxl-new-latest-design-dress-for-women-and-girls-indofly-original-imagqhzpuh6ywvsd.jpeg?q=90&crop=false'},
+
+        ];
+
+        $scope.kidsCollection = [
+          {id: 7, name: 'KIDS DRESS', price: 900, image: 'https://m.media-amazon.com/images/I/81H6Npy-6JL._AC_UY1100_.jpg'},
+          {id: 8, name: 'KIDS INDIAN WAER', price: 1500, image: 'https://5.imimg.com/data5/ANDROID/Default/2022/9/WR/DV/ZK/120923116/product-jpeg-500x500.jpg'},
+          {id: 9, name: 'KIDS PARTY WEAR DRESS', price: 1000, image: 'https://www.okboss.co.in/assets/img/home/boysrow1/kids%20dangri%20casual%20wear.jpg'}
+        ];
+
+        // Shopping cart
+        $scope.cartItems = [];
+
+        // Function to view product details
+        $scope.viewProduct = function (product) {
+          $scope.selectedProduct = product;
+          $('#productDetailsModal').modal('show');
+        };
+
+        // Function to add product to cart
+        $scope.addToCart = function (product) {
+          var existingItem = $scope.cartItems.find(item => item.id === product.id);
+          if (existingItem) {
+            existingItem.quantity++;
+          } else {
+            $scope.cartItems.push({id: product.id, name: product.name, price: product.price, quantity: 1});
+          }
+        };
+
+        // Function to update cart
+        $scope.updateCart = function (item) {
+          if (item.quantity <= 0) {
+            $scope.removeFromCart(item);
+          }
+        };
+
+        // Function to remove product from cart
+        $scope.removeFromCart = function (item) {
+          var index = $scope.cartItems.indexOf(item);
+          if (index !== -1) {
+            $scope.cartItems.splice(index, 1);
+          }
+        };
+
+        // Function to clear cart
+        $scope.clearCart = function () {
+          $scope.cartItems = [];
+        };
+
+        // Function to calculate total price
+        $scope.calculateTotalPrice = function () {
+          var totalPrice = 0;
+          $scope.cartItems.forEach(item => {
+            totalPrice += item.price * item.quantity;
+          });
+          return $filter('currency')(totalPrice, '₹');
+        };
+
+        // Function to proceed to checkout
+        $scope.checkout = function () {
+          // Implement checkout logic
+          alert('Proceeding to checkout...');
+          // Calculate total price
+          var totalPrice = $scope.calculateTotalPrice();
+
+          // Redirect to payment page with total amount as query parameter
+          window.location.href = 'payment.html?totalAmount=' + totalPrice;
+        };
+      });
+
+    </script>
+
+</body>
+
+</html>
